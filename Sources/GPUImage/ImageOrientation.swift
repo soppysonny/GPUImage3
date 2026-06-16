@@ -1,8 +1,28 @@
+#if canImport(UIKit)
+    import UIKit
+#endif
+
 public enum ImageOrientation {
     case portrait
     case portraitUpsideDown
     case landscapeLeft
     case landscapeRight
+
+    #if canImport(UIKit)
+        public static func from(_ uiOrientation: UIImage.Orientation) -> ImageOrientation {
+            switch uiOrientation {
+            case .up: return .portrait
+            case .down: return .portraitUpsideDown
+            case .left: return .landscapeLeft
+            case .right: return .landscapeRight
+            case .upMirrored: return .portrait
+            case .downMirrored: return .portraitUpsideDown
+            case .leftMirrored: return .landscapeLeft
+            case .rightMirrored: return .landscapeRight
+            @unknown default: return .portrait
+            }
+        }
+    #endif
 
     func rotationNeeded(for targetOrientation: ImageOrientation) -> Rotation {
         switch (self, targetOrientation) {

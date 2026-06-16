@@ -11,11 +11,13 @@ public class PictureInput: ImageSource {
     var internalTexture: Texture?
     var hasProcessedImage: Bool = false
     var internalImage: CGImage?
+    var internalOrientation: ImageOrientation = .portrait
 
     public init(
         image: CGImage, smoothlyScaleOutput: Bool = false, orientation: ImageOrientation = .portrait
     ) {
         internalImage = image
+        internalOrientation = orientation
     }
 
     #if canImport(UIKit)
@@ -23,9 +25,10 @@ public class PictureInput: ImageSource {
             image: UIImage, smoothlyScaleOutput: Bool = false,
             orientation: ImageOrientation = .portrait
         ) {
+            let derivedOrientation = ImageOrientation.from(image.imageOrientation)
             self.init(
                 image: image.cgImage!, smoothlyScaleOutput: smoothlyScaleOutput,
-                orientation: orientation)
+                orientation: derivedOrientation)
         }
 
         public convenience init(
@@ -80,7 +83,7 @@ public class PictureInput: ImageSource {
                     let imageTexture = try textureLoader.newTexture(
                         cgImage: internalImage!, options: [MTKTextureLoader.Option.SRGB: false])
                     internalImage = nil
-                    self.internalTexture = Texture(orientation: .portrait, texture: imageTexture)
+                    self.internalTexture = Texture(orientation: internalOrientation, texture: imageTexture)
                     self.updateTargetsWithTexture(self.internalTexture!)
                     self.hasProcessedImage = true
                 } catch {
@@ -97,7 +100,7 @@ public class PictureInput: ImageSource {
                             fatalError("Nil texture received")
                         }
                         self.internalImage = nil
-                        self.internalTexture = Texture(orientation: .portrait, texture: texture)
+                        self.internalTexture = Texture(orientation: internalOrientation, texture: texture)
                         DispatchQueue.global().async {
                             self.updateTargetsWithTexture(self.internalTexture!)
                             self.hasProcessedImage = true
