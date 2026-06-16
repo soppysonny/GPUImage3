@@ -100,7 +100,7 @@ public class PictureInput: ImageSource {
                             fatalError("Nil texture received")
                         }
                         self.internalImage = nil
-                        self.internalTexture = Texture(orientation: internalOrientation, texture: texture)
+                        self.internalTexture = Texture(orientation: self.internalOrientation, texture: texture)
                         DispatchQueue.global().async {
                             self.updateTargetsWithTexture(self.internalTexture!)
                             self.hasProcessedImage = true
