@@ -21,9 +21,9 @@ fragment half4 highlightBoostFragment(SingleInputVertexIO fragmentInput [[stage_
     half softness = max(half(uniform.softness), 0.001h);
     half mask = smoothstep(threshold - softness, threshold + softness, luminance);
 
-    half exposureScale = half(pow(2.0, max(uniform.amount, 0.0)));
-    half3 boosted = min(color.rgb * exposureScale, half3(1.0h));
-    half3 result = mix(color.rgb, boosted, mask);
+    half exposureScale = half(pow(2.0, uniform.amount));
+    half3 adjusted = clamp(color.rgb * exposureScale, half3(0.0h), half3(1.0h));
+    half3 result = mix(color.rgb, adjusted, mask);
 
     return half4(result, color.a);
 }
